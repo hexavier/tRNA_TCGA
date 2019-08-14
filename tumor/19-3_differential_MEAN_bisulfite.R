@@ -47,16 +47,16 @@ for (g in rownames(meanvalues)){
   catypes = append(catypes,cancer_types)
   gene = append(gene, rep(g,length(cancer_types)))
   meansT = append(meansT,sapply(cancer_types,
-                                function(x,dataset) mean(dataset[(dataset$catype==x)&(dataset$state=="CA"),g],na.rm=T),dataset))
+                                function(x,dataset) median(dataset[(dataset$catype==x)&(dataset$state=="CA"),g],na.rm=T),dataset))
   meansH = append(meansH,sapply(cancer_types,
-                                function(x,dataset) mean(dataset[(dataset$catype==x)&(dataset$state=="HE"),g],na.rm=T),dataset))
+                                function(x,dataset) median(dataset[(dataset$catype==x)&(dataset$state=="HE"),g],na.rm=T),dataset))
 }
 summary_table$catype = catypes
 summary_table$gene = gene
 summary_table$mean_exp_T = meansT
 summary_table$mean_exp_H = meansH
 summary_table$delta = (meansT-meansH)
-write.csv(summary_table, sprintf("results/differentialBisulfite_MEANS_TvsH_twosided.csv",type))
+write.csv(summary_table, sprintf("results/differentialBisulfite_MEDIANS_TvsH_twosided.csv",type))
 
 
 #### HEATMAP INTERESTING GENES ####
