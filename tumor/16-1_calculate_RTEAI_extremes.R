@@ -26,6 +26,42 @@ AAnormalize <- function(data,codons){
   return(outdata)
 }
 
+transformdata <- function(data,transf){
+  aa_idx = regexpr("i?[A-Z][a-z]{2}[A-Z]{3}",rownames(data))==1
+  data = data[aa_idx,]
+  if (transf=="log"){
+    outdata = sapply(data,log)
+    # Remove inf values
+    outdata[outdata==-Inf] = NaN
+    rownames(outdata)=rownames(data)
+  }else if (transf=="arcsinh"){
+    outdata = sapply(data,asinh)
+    rownames(outdata)=rownames(data)
+  }else if (transf=="sqrt"){
+    outdata = sapply(data,sqrt)
+    rownames(outdata)=rownames(data)
+  }else if (transf=="rel"){
+    # Compute relative data
+    outdata = data.frame(matrix(ncol = ncol(data), nrow = nrow(data)),row.names = rownames(data))
+    colnames(outdata)= colnames(data)
+    aa = sapply(rownames(outdata),function(x) substr(x,1,nchar(x)-3))
+    uniqueaa = unique(aa)
+    for (n in uniqueaa){
+      idx = (aa %in% n)
+      idx_data = matrix(as.matrix(data[idx,]), ncol = ncol(data), nrow = sum(idx))
+      total = colSums(idx_data)
+      outdata[idx,] = t(apply(idx_data,1,function(x) x/total))
+      iszero = (total %in% 0)
+      if (any(iszero)){
+        outdata[idx,iszero] = 1.0/sum(idx)
+      }
+    }
+  }else{
+    outdata=data
+  }
+  return(outdata)
+}
+
 ## Load trna and weighted CU
 # Codon table
 codons = read.csv("data/codons_table.tab", sep="\t", row.names = 1)
@@ -34,7 +70,7 @@ codons = read.csv("data/codons_table.tab", sep="\t", row.names = 1)
 trna = read.csv("results/AAcTE_CUgenomic_sqrt.csv",row.names = 1)
 # Keep only extremes
 tissues = sapply(colnames(trna), function(x) strsplit(x, "\\.")[[1]][1])
-trna = trna[,(tissues %in% "KIRC")]
+trna = trna[,(tissues %in% "KIRP")]
 # Compute mean of tissue
 tissues = substr(sapply(colnames(trna), function(x) strsplit(x, "\\.")[[1]][5]),1,2)
 trna_mean = data.frame(row.names = rownames(trna))
@@ -63,4 +99,4 @@ for (sample in colnames(anticodon)){
   sample.tai <- get.tai(t(codon), sample.ws)
   TAIs[,sample] = sample.tai
 }
-write.csv(TAIs,"results/RTEAI_2extremes.csv")
+write.csv(TAIs,"results/deltaRTE_KIRP.csv")

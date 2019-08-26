@@ -1,5 +1,5 @@
 # load data
-TAIs = read.csv("results/RTEAI_2extremes.csv",row.names = 1)
+TAIs = read.csv("results/deltaRTE_KIRP.csv",row.names = 1)
 
 # Load mapping file
 np2nm = read.csv("data/NP2NM.txt",sep="\t")
@@ -20,4 +20,4 @@ ugenes = unique(genes)
 TAIs_out = t(sapply(ugenes,function(x) colMeans(TAIs[genes==x,],na.rm = T)))
 
 # Save
-write.csv(TAIs_out,"results/RTEAI_2extremes_renamed.csv")
+write.csv(TAIs_out,"results/deltaRTE_KIRP_renamed.csv")
