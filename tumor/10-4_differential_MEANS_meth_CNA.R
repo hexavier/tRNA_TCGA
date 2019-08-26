@@ -138,7 +138,7 @@ summary_table$catype = catypes
 summary_table$gene = gene
 summary_table$mean_exp_T = meansT
 summary_table$mean_exp_H = meansH
-summary_table$FC = log2(meansT/meansH)
+summary_table$delta = (meansT - meansH)
 summary_table$pval = pvals
 summary_table$pval_adj = p.adjust(pvals,method="fdr")
 write.csv(summary_table, sprintf("results/differentialMeanCNA_TvsH_twosided.csv",type))
