@@ -72,7 +72,7 @@ trna = read.csv("data/TCGAall_nomod.csv",row.names = 1)
 anticodon = extract_cod(transformdata(trna,"sqrt"),codons$ANTICODON)
 
 # Genomic codon usage
-codus = read.csv("data/human_CU_refseq.tsv",sep="\t")
+codus = read.csv("data/human_CU_refseq_CoCoPUT.tsv",sep="\t")
 
 # Isoform gene expression
 isofseq = read.csv("data/healthy_isoform_seq.csv",row.names = 1)
