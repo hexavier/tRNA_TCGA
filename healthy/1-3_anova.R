@@ -51,15 +51,10 @@ for (s in colnames(anticodon)){
   dataset = rbind(dataset,dataset_temp)
 }
 
-# Two-way anova
-res.aov = aov(expr ~ tissue * codon, data=dataset)
-summary(res.aov)
-plot(res.aov)
-
 # Data does not match assumptions
 res.kruskal = list()
 for (c in unique(dataset$codon)){
   res.kruskal[[c]] = kruskal.test(expr ~ tissue, data=dataset[dataset$codon==c,])
 }
 pvals = as.numeric(lapply(res.kruskal,function(x) unlist(x[[3]])))
-corr_pvals = p.adjust(pvals,method = "fdr") # ProGGG not significant
+corr_pvals = p.adjust(pvals,method = "fdr")

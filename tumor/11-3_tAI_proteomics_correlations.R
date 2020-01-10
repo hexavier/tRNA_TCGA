@@ -27,6 +27,7 @@ get_expression <- function(abbr){
 
 cancer_types = c(BRCA="BRCA",colorectal="COAD;READ")
 correlations = data.frame(row.names = c("RTE_ratio","RTE_prot","tAI_ratio","tAI_prot","RtAI_ratio","RtAI_prot"))
+corsig = data.frame(row.names = c("RTE_ratio","RTE_prot","tAI_ratio","tAI_prot","RtAI_ratio","RtAI_prot"))
 for (type in names(cancer_types)){
   # Get data
   seqdata = get_expression(cancer_types[type])
@@ -44,13 +45,15 @@ for (type in names(cancer_types)){
   samples = colnames(tAI)[colnames(tAI) %in% colnames(protdata)[colnames(protdata) %in% colnames(seqdata)]]
   # Calculate ratios
   ratio = data.frame(sapply(samples,function(x) protdata[genes,x]/seqdata[genes,x]))
-  prots = protdata[genes,samples]
+  ratio[ratio==Inf] <- NA; ratio[ratio==(-Inf)] <- NA
+  prot = protdata[genes,samples]
   # Subset tAI and RTE
   RTE = RTE[genes,(colnames(RTE) %in% samples)]
   tAI = tAI[genes,(colnames(tAI) %in% samples)]
   RtAI = RtAI[genes,(colnames(RtAI) %in% samples)]
   # Calculate correlations
-  correlations[,sprintf("%s-%s",type,samples)] = sapply(1:length(samples),function(x) as.numeric(cor(cbind(ratio[,x],prots[,x],RTE[,x],tAI[,x],RtAI[,x]),method="spearman",use="na.or.complete")[1:2,3:5]))
+  correlations[,sprintf("%s-%s",type,samples)] = sapply(1:length(samples),function(x) as.numeric(cor(cbind(ratio[,x],prot[,x],RTE[,x],tAI[,x],RtAI[,x]),method="spearman",use="pairwise.complete.obs")[1:2,3:5]))
+  corsig[,sprintf("%s-%s",type,samples)] = sapply(1:length(samples),function(x) sapply(rownames(corsig),function(m) cor.test(unlist(get(strsplit(m,"_")[[1]][1])[x]),unlist(get(strsplit(m,"_")[[1]][2])[x]),method="spearman")[[3]]))
 }
 correlations=t(correlations)
 write.csv(correlations,"results/tAIvsProt_correlations_bysample.csv")

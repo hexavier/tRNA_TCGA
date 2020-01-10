@@ -42,7 +42,6 @@ def transformdata(data,transf):
 
 #%% Load data
 trna = pd.read_csv("data/HEK_nomod_norm.csv",index_col=0)
-#trna = pd.read_csv("data/HEK_nomod_norm.csv",index_col=0)
 no_copies_trna = np.array([False, False, True, False, True, False, False, False, False, False, False, False, True, False, 
                            True, False, False, False, False, False, False, False, False, True, False, True, False, False, 
                            False, False, False, False, False, False, True, False, False, False, False, True, False, False, 
@@ -96,7 +95,7 @@ features = pd.DataFrame(pca.components_.transpose(), columns=["PCA1","PCA2"], in
 principalDf = pd.DataFrame(principalComponents,columns=["PCA1","PCA2"],index=data.columns)
 #principalDf["source"] = [re.findall("[A-Za-z0-9_+]+(?=-)",s)[0] for s in data.columns]
 principalDf["source"] = ["small-RNAseq","small-RNAseq","small-RNAseq","small-RNAseq","tRNA-Seq",
-           "tRNA-Seq","tRNA-Seq","copy number","other","other","other","other","other","other","other","other"]
+           "tRNA-Seq","tRNA-Seq","copy number","smallZhang","other","other","other","other","other","other","other","other"]
 #principalDf["source"] = ["small-RNAseq","small-RNAseq","small-RNAseq","small-RNAseq","precursors","precursors","precursors","precursors"]
 
 
