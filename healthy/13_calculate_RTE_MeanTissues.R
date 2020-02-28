@@ -66,21 +66,17 @@ transformdata <- function(data,transf){
 # Codon table
 codons = read.csv("data/codons_table.tab", sep="\t", row.names = 1)
 
-# tRNAs
-trna = read.csv("results/AAcTE_CUgenomic_sqrt.csv",row.names = 1)
-tissues = sapply(colnames(trna), function(x) strsplit(x, "\\.")[[1]][1])
-state = substr(sapply(colnames(trna), function(x) strsplit(x, "\\.")[[1]][5]),1,2)
-
 # Compute mean of tissue
+trna = t(read.csv("results/matched_AAcTE.csv",row.names = 1))
+tissues = sapply(colnames(trna), function(x) strsplit(x, "\\.")[[1]][1])
 trna_mean = data.frame(row.names = rownames(trna))
 for (t in unique(tissues)){
-  trna_mean[,sprintf("%s-HE",t)] = rowMeans(trna[,(state=="11")&(tissues==t)],na.rm = T)
-  trna_mean[,sprintf("%s-CA",t)] = rowMeans(trna[,(state=="01")&(tissues==t)],na.rm = T)
+  trna_mean[,t] = rowMeans(trna[,tissues %in% t], na.rm = T)
 }
 anticodon = trna_mean
 
 # Genomic codon usage
-codus = read.csv("data/human_CU_refseq.tsv",sep="\t")
+codus = read.csv("data/human_CU_refseq_CoCoPUT.tsv",sep="\t")
 codus_idx = as.character(codus$Protein.ID)
 # Keep only columns with codon info
 codus_clean = data.frame(sapply(unique(codus_idx),function(x) colMeans(codus[(codus_idx==x),13:ncol(codus)],na.rm = T)))
@@ -100,4 +96,4 @@ for (sample in colnames(anticodon)){
   sample.tai <- get.tai(t(codon), sample.ws)
   TAIs[,sample] = sample.tai
 }
-write.csv(TAIs,"results/RTE_catypes.csv")
+write.csv(TAIs,"results/RTEAI_MeanTissues.csv")
