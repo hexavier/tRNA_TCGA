@@ -74,7 +74,7 @@ heatmap.2(diffexp_mean,
           na.color="grey",breaks = breaks)
 
 #### HEATMAP INTERESTING GENES ####
-aadata = values[substr(values$isoacceptor,1,3)=="Pro",]
+aadata = values[substr(values$isoacceptor,1,3)=="Arg",]
 genes = unique(aadata$gene)
 
 # Initialize structures

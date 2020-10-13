@@ -47,7 +47,7 @@ rownames(codus_clean) = sapply(rownames(codus_clean),function(x) paste(codons[x,
 # Retrieve codons
 codon = transformdata(codus_clean,"rel")
 # Keep CCA
-codon = t(codon["GlyGGT",])
+codon = t(codon["ArgAGA",])
 
 ## Rename proteins
 # Load mapping file
@@ -69,4 +69,4 @@ ugenes = unique(genes)
 codon_out = t(sapply(ugenes,function(x) mean(codon[genes %in% x],na.rm = T)))
 
 # Save
-write.csv(t(codon_out),"results/relGGTcontent_genes.csv")
+write.csv(t(codon_out),"results/relAGAcontent_genes.csv")
