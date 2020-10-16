@@ -139,4 +139,4 @@ for (sample in colnames(trna)){
   # nTE[,sample,] = t(apply(cTE,2,AAnormalize,paste0(codons[rownames(codon),"AA"],rownames(codon)))) # normalize by AA
 }
 
-save(nTE,file="/home/xhernandez/Documents/tAI_genomic/AAnTE_CUgenomic_sqrt.rda")
+save(nTE,file="/home/xhernandez/Documents/tAI_genomic/AAcTE_CUgenomic_sqrt.rda")

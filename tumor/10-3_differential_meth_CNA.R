@@ -20,13 +20,16 @@ for (t in names(cancer_types)){
     ## Analyze methylation status of genes
     expr_samples = substr(colnames(rawvalues),1,15)
     mapped_normal = (regexpr("TCGA\\.[A-Z,0-9]{2}\\.[A-Z,0-9]{4}\\.11",expr_samples))==1
+    mapped_tumor = (regexpr("TCGA\\.[A-Z,0-9]{2}\\.[A-Z,0-9]{4}\\.01",expr_samples))==1
     
     dataset_temp = data.frame(row.names = colnames(rawvalues))
     dataset_temp$sample = expr_samples
     dataset_temp[,rownames(rawvalues)] = t(rawvalues)
     dataset_temp$catype = type
-    dataset_temp$state = "CA"
+    dataset_temp$state = NA
     dataset_temp[mapped_normal,"state"] = "HE"
+    dataset_temp[mapped_tumor,"state"] = "CA"
+    dataset_temp = dataset_temp[!is.na(dataset_temp$state),]
     dataset = rbind(dataset, dataset_temp)
   }
 }
@@ -54,7 +57,7 @@ for (g in rownames(rawvalues)){
   # Calculate pvalue if at least 2 healthy and 2 tumor samples are available
   pvals = append(pvals,sapply(names(cancer_types),
                               function(x,dataset) if (all(c(sum(!is.na(dataset[(dataset$catype==x)&(dataset$state=="HE"),g])),
-                                                            sum(!is.na(dataset[(dataset$catype==x)&(dataset$state=="HE"),g])))>1)){
+                                                            sum(!is.na(dataset[(dataset$catype==x)&(dataset$state=="CA"),g])))>1)){
                               wilcox.test(dataset[(dataset$catype==x)&(dataset$state=="HE"),g],
                                                               dataset[(dataset$catype==x)&(dataset$state=="CA"),g],
                                                               alternative = "two.sided")$p.value}else{NA},dataset))
@@ -90,13 +93,16 @@ for (t in names(cancer_types)){
     ## Analyze methylation status of genes
     expr_samples = substr(colnames(rawvalues),1,15)
     mapped_normal = (regexpr("TCGA\\.[A-Z,0-9]{2}\\.[A-Z,0-9]{4}\\.11",expr_samples))==1
+    mapped_tumor = (regexpr("TCGA\\.[A-Z,0-9]{2}\\.[A-Z,0-9]{4}\\.01",expr_samples))==1
     
     dataset_temp = data.frame(row.names = colnames(rawvalues))
     dataset_temp$sample = expr_samples
     dataset_temp[,rownames(rawvalues)] = t(rawvalues)
     dataset_temp$catype = type
-    dataset_temp$state = "CA"
+    dataset_temp$state = NA
     dataset_temp[mapped_normal,"state"] = "HE"
+    dataset_temp[mapped_tumor,"state"] = "CA"
+    dataset_temp = dataset_temp[!is.na(dataset_temp$state),]
     dataset = rbind(dataset, dataset_temp)
   }
 }
@@ -124,7 +130,7 @@ for (g in rownames(rawvalues)){
   # Calculate pvalue if at least 2 healthy and 2 tumor samples are available
   pvals = append(pvals,sapply(names(cancer_types),
                               function(x,dataset) if (all(c(sum(!is.na(dataset[(dataset$catype==x)&(dataset$state=="HE"),g])),
-                                                            sum(!is.na(dataset[(dataset$catype==x)&(dataset$state=="HE"),g])))>1)){
+                                                            sum(!is.na(dataset[(dataset$catype==x)&(dataset$state=="CA"),g])))>1)){
                                 wilcox.test(dataset[(dataset$catype==x)&(dataset$state=="HE"),g],
                                             dataset[(dataset$catype==x)&(dataset$state=="CA"),g],
                                             alternative = "two.sided")$p.value}else{NA},dataset))

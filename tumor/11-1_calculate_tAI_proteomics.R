@@ -124,6 +124,7 @@ for (type in names(cancer_types)){
   
   # Calculate tAI
   sample.ws = apply(temptrna,2, get.ws, s=initial_s, sking=0)
+  #sample.ws = apply(sample.ws,2,AAnormalize,paste0(codons[rownames(codon),"AA"],rownames(codon))) # normalize by AA
 
   # Compute tAI per all genes
   sample.tai <- apply(sample.ws,2,function(x) get.tai(t(codon),x))

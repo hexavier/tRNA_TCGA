@@ -5,12 +5,10 @@ library(ggplot2)
 cancer_types = c(BRCA="BRCA",PRAD="PRAD",KICH="KICH",KIRC="KIRC",KIRP="KIRP",LUAD="LUAD",LUSC="LUSC",HNSC="HNSC",UCEC="UCEC",CESC="CESC",
                  LIHC="LIHC", CHOL="CHOL",THCA="THCA",COAD="COAD",READ="READ",ESCA="ESCA",STAD="STAD",BLCA="BLCA",PAAD="PAAD",THYM="THYM",
                  SKCM="SKCM",PCPG="PCPG")
-#values = read.csv("results/differentialMeth_TvsH_twosided.csv",row.names = 1)
 #values = read.csv("results/differentialCNA_TvsH_twosided.csv",row.names = 1)
-#values = read.csv("results/differentialMeanMeth_TvsH_twosided.csv",row.names = 1)
 values = read.csv("results/differentialMeanCNA_TvsH_twosided.csv",row.names = 1)
 
-#values = values[substr(values$isoacceptor,1,3)=="Gly",]
+#values = values[substr(values$isoacceptor,1,3)=="Arg",]
 genes = as.character(unique(values$gene))
 
 # Initialize structures

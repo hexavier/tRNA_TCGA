@@ -26,42 +26,6 @@ AAnormalize <- function(data,codons){
   return(outdata)
 }
 
-transformdata <- function(data,transf){
-  aa_idx = regexpr("i?[A-Z][a-z]{2}[A-Z]{3}",rownames(data))==1
-  data = data[aa_idx,]
-  if (transf=="log"){
-    outdata = sapply(data,log)
-    # Remove inf values
-    outdata[outdata==-Inf] = NaN
-    rownames(outdata)=rownames(data)
-  }else if (transf=="arcsinh"){
-    outdata = sapply(data,asinh)
-    rownames(outdata)=rownames(data)
-  }else if (transf=="sqrt"){
-    outdata = sapply(data,sqrt)
-    rownames(outdata)=rownames(data)
-  }else if (transf=="rel"){
-    # Compute relative data
-    outdata = data.frame(matrix(ncol = ncol(data), nrow = nrow(data)),row.names = rownames(data))
-    colnames(outdata)= colnames(data)
-    aa = sapply(rownames(outdata),function(x) substr(x,1,nchar(x)-3))
-    uniqueaa = unique(aa)
-    for (n in uniqueaa){
-      idx = (aa %in% n)
-      idx_data = matrix(as.matrix(data[idx,]), ncol = ncol(data), nrow = sum(idx))
-      total = colSums(idx_data)
-      outdata[idx,] = t(apply(idx_data,1,function(x) x/total))
-      iszero = (total %in% 0)
-      if (any(iszero)){
-        outdata[idx,iszero] = 1.0/sum(idx)
-      }
-    }
-  }else{
-    outdata=data
-  }
-  return(outdata)
-}
-
 ## Load trna and weighted CU
 # Codon table
 codons = read.csv("data/codons_table.tab", sep="\t", row.names = 1)
@@ -87,7 +51,7 @@ codus_clean = data.frame(sapply(unique(codus_idx),function(x) colMeans(codus[(co
 rownames(codus_clean) = sapply(rownames(codus_clean),function(x) paste(codons[x,"AA"],x,sep=""))
 
 ## Calculate tAI for genomic CU
-codon = extract_cod(transformdata(codus_clean,""),rownames(codons)[!(codons$AA %in% c("Stop","Met"))])
+codon = extract_cod(codus_clean,rownames(codons)[!(codons$AA %in% c("Stop","Met"))])
 
 TAIs = data.frame(matrix(ncol = ncol(anticodon), nrow = ncol(codon)),row.names = colnames(codon)); colnames(TAIs) = colnames(anticodon)
 initial_s = c(0, 0, 0, 0, 0.5, 0.5, 0.75, 0.5, 0.5)

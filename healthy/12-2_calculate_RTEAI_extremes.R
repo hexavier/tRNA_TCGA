@@ -52,7 +52,7 @@ codus_clean = data.frame(sapply(unique(codus_idx),function(x) colMeans(codus[(co
 rownames(codus_clean) = sapply(rownames(codus_clean),function(x) paste(codons[x,"AA"],x,sep=""))
 
 ## Calculate tAI for genomic CU
-codon = extract_cod(transformdata(codus_clean,""),rownames(codons)[!(codons$AA %in% c("Stop","Met"))])
+codon = extract_cod(codus_clean,rownames(codons)[!(codons$AA %in% c("Stop","Met"))])
 
 TAIs = data.frame(matrix(ncol = ncol(anticodon), nrow = ncol(codon)),row.names = colnames(codon)); colnames(TAIs) = colnames(anticodon)
 initial_s = c(0, 0, 0, 0, 0.5, 0.5, 0.75, 0.5, 0.5)
